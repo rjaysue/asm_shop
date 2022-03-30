@@ -13,7 +13,7 @@
 
 -new user registration = 00000
 
--display shop info upon used sign in 
+-display shop info upon user sign in 
 
 -future work: the purchasing process
 
