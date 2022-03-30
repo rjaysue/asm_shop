@@ -1,6 +1,6 @@
 # asm_shop
 
-#Assemblcode
+#Assemblycode
 #emulator8086
 
 #log 1
