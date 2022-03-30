@@ -7,7 +7,9 @@
 
 -displays some introduction after running
 
--prompts user for code 
+-prompts user for code
+
+-wrong code will be prompt again until correct code is given
 
 -default code = ABCDE
 
