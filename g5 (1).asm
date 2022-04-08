@@ -294,7 +294,14 @@ SAN_LEB:
    MUL BL 
    
    call display_new_line
-   CALL PRINT_NUM_UNS
+   CALL PRINT_NUM_UNS 
+   
+   ;----------Add to SUM_OF_PURCHASE------------
+   lea di, SUM_OF_PURCHASE
+   add [di],ax
+   
+   ;--------------------------------------------   
+   
    
    ;jmp output
     JMP BUY
@@ -313,7 +320,13 @@ MASK_LEB:
    MUL BL 
    
    call display_new_line
-   CALL PRINT_NUM_UNS
+   CALL PRINT_NUM_UNS 
+   
+   ;----------Add to SUM_OF_PURCHASE------------
+   lea di, SUM_OF_PURCHASE
+   add [di],ax
+   
+   ;--------------------------------------------
    
    JMP BUY
    
@@ -332,7 +345,13 @@ SPRAY_LEB:
    MUL BL                      ;STORE IN BL
    
    call display_new_line
-   CALL PRINT_NUM_UNS
+   CALL PRINT_NUM_UNS   
+   
+   ;----------Add to SUM_OF_PURCHASE------------
+   lea di, SUM_OF_PURCHASE
+   add [di],ax
+   
+   ;--------------------------------------------
    
    JMP BUY
    ;JMP QUANTITY
@@ -351,7 +370,14 @@ TEST_LEB:
    MUL BL 
    
    call display_new_line
-   CALL PRINT_NUM_UNS
+   CALL PRINT_NUM_UNS 
+   
+   ;----------Add to SUM_OF_PURCHASE------------
+   lea di, SUM_OF_PURCHASE
+   add [di],ax
+   
+   ;--------------------------------------------   
+   
    JMP BUY
    ;jmp output
    
@@ -429,7 +455,14 @@ BASMATI_LEB:
    MUL BL 
    
    call display_new_line
-   CALL PRINT_NUM_UNS
+   CALL PRINT_NUM_UNS 
+   
+   ;----------Add to SUM_OF_PURCHASE------------
+   lea di, SUM_OF_PURCHASE
+   add [di],ax
+   
+   ;--------------------------------------------   
+   
    JMP BUY2
    ;jmp output
     
@@ -447,7 +480,14 @@ LOCAL_LEB:
    MUL BL 
    
    call display_new_line
-   CALL PRINT_NUM_UNS
+   CALL PRINT_NUM_UNS 
+   
+   ;----------Add to SUM_OF_PURCHASE------------
+   lea di, SUM_OF_PURCHASE
+   add [di],ax
+   
+   ;--------------------------------------------   
+   
    JMP BUY2
    ;jmp output
    
@@ -465,7 +505,14 @@ PUSA_LEB:
    MUL BL 
    
    call display_new_line
-   CALL PRINT_NUM_UNS
+   CALL PRINT_NUM_UNS 
+   
+   ;----------Add to SUM_OF_PURCHASE------------
+   lea di, SUM_OF_PURCHASE
+   add [di],ax
+   
+   ;--------------------------------------------   
+   
    JMP BUY2
    ;jmp output
     
@@ -484,6 +531,13 @@ FRAGRANT_LEB:
    
    call display_new_line
    CALL PRINT_NUM_UNS
+   
+   ;----------Add to SUM_OF_PURCHASE------------
+   lea di, SUM_OF_PURCHASE
+   add [di],ax
+   
+   ;--------------------------------------------   
+   
    JMP BUY2
    ;jmp output            
    
