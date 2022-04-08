@@ -104,11 +104,17 @@ E_DISCOUNT DB 10,13,'ENTER DISCOUNT(IF NOT AVAILABLE ENTER 0 ): $'
 
 NL DB 0DH,0AH,'$'                ;NEW LINE  
 
-A DW ?                           ;DECALRED VARIABLES
+A DW ?                           ;DECLARED VARIABLES
 B DW ?
 C DW ?
 S DW 0,'$'
-Z DW ? 
+Z DW ?  
+
+;------------------Checking out------------------------  
+
+AGAIN2  DB 10,13,'DO YOU WANT TO BUY MORE? (1.YES//2.CHECKOUT): $'
+
+SUM_OF_PURCHASE dw 0
 
 ;--------User authentication code data definition:(by SJR)----
 
@@ -192,13 +198,13 @@ UI1:
        LEA DX,NL                   ;PRINT A NEW LINE
        MOV AH,9
        INT 21H 
-       MOV BL,10                   ;COLOR CODE
        
+       MOV BL,10                   ;COLOR CODE      
        MOV AH,9 
        MOV AL,0  
        INT 10H
    
-       LEA DX,LIST                ;PRINT SHOP LIST 
+       LEA DX,LIST                ;PRINT SHOP LIST "WHICH SHOP.."
        MOV AH,9
        INT 21H 
    
@@ -206,7 +212,7 @@ UI1:
        MOV AH,9
        INT 21H
    
-       LEA DX,ENTER               ;PROMPT USER TO ENTER INPUT 
+       LEA DX,ENTER               ;PROMPT USER TO ENTER INPUT"ENTER THE SHOP U WANNA VISIT" 
        MOV AH,9
        INT 21H
    
@@ -249,7 +255,7 @@ PAGE1:
    JMP BUY  
    
 BUY:   
-   LEA DX,ENTER1                
+   LEA DX,ENTER1               ;"PLEASE ENTER THE ITEM U WANT TO BUY" 
    MOV AH,9
    INT 21H 
     
@@ -269,7 +275,7 @@ BUY:
    JE TEST_LEB 
    
    CMP AL,53                   ;IF AL=5 GO TO CHECKOUT
-   JE TEST_LEB
+   JE CHECKOUT
    
    CMP AL,54                   ;IF AL=6 GO TO RICE SHOP
    JE PAGE2
@@ -282,12 +288,12 @@ SAN_LEB:
    MOV AH,1                    ;TAKE AN INPUT & SAVED TO AL
    INT 21H 
    
-   SUB AL,48
+   SUB AL,0x30
    
    MOV BL,25                   ;PRICE OF SANITIZER IS MOVED TO A WHERE PRICE IS 25 
    MUL BL 
    
-   
+   call display_new_line
    CALL PRINT_NUM_UNS
    
    ;jmp output
@@ -306,7 +312,7 @@ MASK_LEB:
    MOV BL,10                   ;PRICE OF SANITIZER IS MOVED TO A WHERE PRICE IS 25 
    MUL BL 
    
-   
+   call display_new_line
    CALL PRINT_NUM_UNS
    
    JMP BUY
@@ -325,7 +331,7 @@ SPRAY_LEB:
    MOV BL,13                   ;PRICE OF SPRAY IS MOVED TO A WHERE PRICE IS 13  
    MUL BL                      ;STORE IN BL
    
-   
+   call display_new_line
    CALL PRINT_NUM_UNS
    
    JMP BUY
@@ -344,7 +350,7 @@ TEST_LEB:
    MOV BL,40                   ;PRICE OF TEST KITS IS MOVED TO A WHERE PRICE IS 40 
    MUL BL 
    
-   
+   call display_new_line
    CALL PRINT_NUM_UNS
    JMP BUY
    ;jmp output
@@ -403,7 +409,7 @@ BUY2:
    JE FRAGRANT_LEB
    
    CMP AL,53                   ;IF AL=5 GO TO CHECK OUT
-   JE FRAGRANT_LEB
+   JE CHECKOUT
    
    CMP AL,54                   ;IF AL=6 GO TO PHARMACY SHOP
    JE PAGE1
@@ -422,7 +428,7 @@ BASMATI_LEB:
    MOV BL,39                   ;PRICE OF CASUAL SHIRT MALE IS MOVED TO A WHERE PRICE IS 150 
    MUL BL 
    
-   
+   call display_new_line
    CALL PRINT_NUM_UNS
    JMP BUY2
    ;jmp output
@@ -440,7 +446,7 @@ LOCAL_LEB:
    MOV BL,15                   ;PRICE OF TEST KITS IS MOVED TO A WHERE PRICE IS 15 
    MUL BL 
    
-   
+   call display_new_line
    CALL PRINT_NUM_UNS
    JMP BUY2
    ;jmp output
@@ -458,7 +464,7 @@ PUSA_LEB:
    MOV BL,44                   ;PRICE OF TEST KITS IS MOVED TO A WHERE PRICE IS 44 
    MUL BL 
    
-   
+   call display_new_line
    CALL PRINT_NUM_UNS
    JMP BUY2
    ;jmp output
@@ -476,13 +482,42 @@ FRAGRANT_LEB:
    MOV BL,31                   ;PRICE OF TEST KITS IS MOVED TO A WHERE PRICE IS 40 
    MUL BL 
    
-   
+   call display_new_line
    CALL PRINT_NUM_UNS
    JMP BUY2
-   ;jmp output 
+   ;jmp output            
    
+   
+;------------Implementing CHECKOUT---------------------   
+   
+CHECKOUT:
+    CALL clear_screen             ; procedure is defined below   
+
+    LEA DX,INTRO                  ;PRINT THE SHOPEE SIGN                  
+    MOV AH,9
+    INT 21H 
+    
+    LEA DX,AGAIN2                 ;ASK IF USER WANTS TO BUY MORE   
+    MOV AH,9
+    INT 21H 
+    
+    MOV AH,1                     ;TAKES THE INPUT OF YES OR NO
+    INT 21H
+    
+    CMP AL,49                    ;IF YES, THEN AGAIN GO TO SHOPLIST MENU AND BUY AGAIN
+    JE UI1
+    
+   ;IF NO, PROGRAM WILL CONTINUE 
+    call display_new_line   
+    
+    lea di, SUM_OF_PURCHASE
+    mov ax, [di]
+    CALL PRINT_NUM_UNS 
+    
+    jmp $ ;temporary
  
-                             
+;-------------------CHECKOUT END----------------------       
+                      
 ASK1: 
     MOV BL,1                     ;COLOR  CODE
     MOV AH,9 
@@ -601,7 +636,16 @@ display_new_user_reg proc
   mov  ah, 9
   int  21h
   ret
-display_new_user_reg endp 
+display_new_user_reg endp   
+
+display_new_line proc 
+    XCHG BX,AX
+    LEA DX,NL                   ;PRINT A NEW LINE
+    MOV AH,9
+    INT 21H
+    XCHG BX,AX  
+    ret
+display_new_line endp
 
 ;------end of User authentication code procedure calls definition by SJR-------    
    
